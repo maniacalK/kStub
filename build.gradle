@@ -4,12 +4,15 @@ buildscript {
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.70'
     id 'application'
+    id 'distribution'
 }
 
 repositories {
     jcenter()
     mavenCentral()
 }
+
+apply plugin: 'idea'
 
 sourceCompatibility = 1.8
 compileKotlin {
@@ -22,6 +25,10 @@ compileTestKotlin {
 
 dependencies {
     implementation platform('org.jetbrains.kotlin:kotlin-bom')
+
+    implementation 'org.slf4j:slf4j-simple:1.7.21'
+
+
     implementation "io.ktor:ktor-server-core:$ktor_version"
     implementation "io.ktor:ktor-server-netty:$ktor_version"
     implementation "io.ktor:ktor-locations:$ktor_version"
@@ -35,4 +42,13 @@ dependencies {
 
 application {
     mainClassName = 'com.kStub.AppKt'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'com.kStub.App'
+        )
+    }
 }
