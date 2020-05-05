@@ -1,0 +1,16 @@
+ext {
+    ktor_version = '1.3.2'
+
+    libs = [
+            app: [
+                    ktorCore     : "io.ktor:ktor-server-core:$ktor_version",
+                    ktorNetty    : "io.ktor:ktor-server-netty:$ktor_version",
+                    ktorLocations: "io.ktor:ktor-locations:$ktor_version",
+                    ktorLogging  : "io.ktor:ktor-client-logging-native:$ktor_version",
+                    ktorGson     : "io.ktor:ktor-gson:$ktor_version",
+                    ktorStdlib   : 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+            ]
+    ]
+
+
+}

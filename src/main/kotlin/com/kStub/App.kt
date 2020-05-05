@@ -3,6 +3,7 @@
  */
 package com.kStub
 
+import com.kStub.stubber.Stubber
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -14,6 +15,7 @@ import io.ktor.client.features.logging.Logging
 import io.ktor.features.*
 import io.ktor.gson.gson
 import io.ktor.http.ContentType
+import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.get
@@ -41,6 +43,23 @@ fun Application.module() {
         level = Level.TRACE
     }
     install(Routing) {
+
+        val stubber = Stubber()
+
+
+        stubber.getRoutes().forEach { item ->
+            when (item.request.method) {
+                "GET" -> get(item.request.url) {
+                    call.respond(
+                            item.response.bodyFile?.let {
+                                stubber.loadBody("body/$it")
+                            } ?: item.response.body
+                    )
+                }
+                else -> null
+            }
+        }
+
         get("/") {
             call.respondText("{  }", ContentType.Text.JavaScript)
         }
