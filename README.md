@@ -7,6 +7,15 @@ A simple kTor application to allow stubbing for mobile applications.
 
     kStub> ./bin/kStub
     
+
+### Android
+
+Android emulator can point to the local host machine by using 
+`http://10.0.2.2/` in the application base path
+    
+### iOS
+
+iOS simulators can access localhost as they are on the same network as host machine
     
 ### Structure
 
@@ -14,6 +23,7 @@ A simple kTor application to allow stubbing for mobile applications.
         - bin
             - kStub
         - libs (jar file dependencies)
+        - config/kstub_config.json - User config
         - stub (user specs/body)
     
 
@@ -78,7 +88,7 @@ For simple content this field can be used
 
 #### File
 
-`bodFile` - optional, but has higher priority than `body`
+`bodyFile` - optional, but has higher priority than `body`
 
     example:
     {
@@ -95,11 +105,24 @@ This file can contain anything
 
       --port=8090
       
-      
+Command line arguments override file arguments for `port` etc, if duplicate. 
 
 ### File
 
+`config/kstub_config.json` of this format:
+    
+    {
+        "port": 8888
+    }
 
+| Property | Detail | Default |
+|:--------:|:------:|:-------:|
+|`port`    |Port    |8080|
 
 ## Todo
+
+* Other Files for body
+* Content Type other than JSON
+* Admin portal to manage on the fly
+* Allow editing spec/body in realtime, for subsequent requests
  
