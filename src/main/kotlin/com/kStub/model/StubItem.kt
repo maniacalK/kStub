@@ -5,7 +5,7 @@ data class StubItem(
         val response: StubResponse) {
 
     override fun toString(): String {
-        return "Stub: [\n\t$request\n\t$response\n]"
+        return "\nStub: [\n\t$request\n\t$response\n]"
     }
 }
 

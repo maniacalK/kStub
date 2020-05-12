@@ -20,8 +20,10 @@ import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
 import java.io.File
 
-fun Application.module() {
+const val STUB_PATH = "stub"
+val logger = LoggerFactory.getLogger("main")
 
+fun Application.module() {
     install(StatusPages) {
         exception<NotFoundException> {
             call.respondText("NOT FOUND")
@@ -49,7 +51,7 @@ fun Application.module() {
                 "GET" -> get(item.request.url) {
                     logger.info("Stub Hit: [${item.request.method}] ${item.request.url}")
                     item.response.bodyFile?.let {
-                        call.respondFile(File("body/$it"))
+                        call.respondFile(File("$STUB_PATH/$it"))
                     } ?: call.respondText(item.response.body)
                 }
                 else -> {
@@ -61,7 +63,6 @@ fun Application.module() {
 }
 
 class App {
-
     companion object {
         fun main(args: Array<String>) {
             embeddedServer(Netty, 8080,
@@ -69,11 +70,23 @@ class App {
                     module = Application::module).start(wait = true)
         }
     }
-
 }
 
 fun main(args: Array<String>) {
-    embeddedServer(Netty, 8080,
+    val options = getOptions(args)
+
+    logger.info(options.toString())
+
+    embeddedServer(Netty, options["port"]?.toInt() ?: 8080,
             watchPaths = listOf("App.kt"),
             module = Application::module).start(wait = true)
+}
+
+private fun getOptions(args: Array<String>): Map<String, String> {
+    return args.mapNotNull {
+        val splits = it.split("=")
+        if (splits.size == 2 && splits[0].startsWith("--")) {
+            splits[0].removePrefix("--").toLowerCase() to splits[1]
+        } else null
+    }.toList().toMap()
 }
