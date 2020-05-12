@@ -52,3 +52,11 @@ jar {
         )
     }
 }
+
+task createDist(type: Sync) {
+    group 'distribution'
+    from "$buildDir/install/kStub"
+    into "$projectDir/dist/kStub/"
+}
+
+createDist.dependsOn(installDist)

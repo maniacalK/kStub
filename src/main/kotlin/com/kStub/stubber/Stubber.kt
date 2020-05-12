@@ -1,15 +1,15 @@
 package com.kStub.stubber
 
 import com.google.gson.Gson
+import com.kStub.model.StubConfig
 import com.kStub.model.StubItem
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.lang.Exception
 
 class Stubber {
 
     private val gson = Gson()
-    val logger = LoggerFactory.getLogger("main")
+    private val logger = LoggerFactory.getLogger("stubber")
 
     fun getRoutes(): List<StubItem> {
         return File("stub").walk().mapNotNull { file ->
@@ -30,4 +30,20 @@ class Stubber {
     fun loadBody(fileName: String): String {
         return File(fileName).readText(Charsets.UTF_8)
     }
+
+    fun loadConfig(filePath: String?): StubConfig =
+            filePath?.let {
+                File(it).run {
+                    if (exists()) {
+                        Gson().fromJson<StubConfig>(
+                                readText(Charsets.UTF_8),
+                                StubConfig::class.java
+                        )
+                    } else {
+                        logger.info("No config file found: Using Default Config")
+                        StubConfig()
+                    }
+                }
+            } ?: StubConfig()
+
 }

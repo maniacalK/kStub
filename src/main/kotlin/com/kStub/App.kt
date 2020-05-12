@@ -1,5 +1,6 @@
 package com.kStub
 
+import com.google.gson.Gson
 import com.kStub.stubber.Stubber
 import io.ktor.application.Application
 import io.ktor.application.call
@@ -21,7 +22,8 @@ import org.slf4j.event.Level
 import java.io.File
 
 const val STUB_PATH = "stub"
-val logger = LoggerFactory.getLogger("main")
+val logger = LoggerFactory.getLogger("app")
+val stubber = Stubber()
 
 fun Application.module() {
     install(StatusPages) {
@@ -42,7 +44,7 @@ fun Application.module() {
         level = Level.TRACE
     }
     install(Routing) {
-        val stubber = Stubber()
+
         val logger = LoggerFactory.getLogger("main")
 
         stubber.getRoutes().forEach { item ->
@@ -73,13 +75,18 @@ class App {
 }
 
 fun main(args: Array<String>) {
+    val config = stubber.loadConfig("config/kstub_config.json")
     val options = getOptions(args)
 
+    logger.info(Gson().toJson(config))
     logger.info(options.toString())
 
-    embeddedServer(Netty, options["port"]?.toInt() ?: 8080,
+    embeddedServer(
+            factory = Netty,
+            port = options["port"]?.toInt() ?: config.port,
             watchPaths = listOf("App.kt"),
-            module = Application::module).start(wait = true)
+            module = Application::module
+    ).start(wait = true)
 }
 
 private fun getOptions(args: Array<String>): Map<String, String> {
