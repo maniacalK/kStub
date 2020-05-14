@@ -1,4 +1,4 @@
-package com.kStub.model
+package com.maniacalK.kStub.model
 
 data class StubItem(
         val request: StubRequest,

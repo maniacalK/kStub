@@ -41,14 +41,14 @@ dependencies {
 }
 
 application {
-    mainClassName = 'com.kStub.AppKt'
+    mainClassName = 'com.maniacalK.kStub.AppKt'
 }
 
 jar {
     manifest {
         attributes(
                 'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-                'Main-Class': 'com.kStub.App'
+                'Main-Class': 'com.maniacalK.kStub.App'
         )
     }
 }

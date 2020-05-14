@@ -1,7 +1,7 @@
-package com.kStub
+package com.maniacalK.kStub
 
 import com.google.gson.Gson
-import com.kStub.stubber.Stubber
+import com.maniacalK.kStub.stubber.Stubber
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install

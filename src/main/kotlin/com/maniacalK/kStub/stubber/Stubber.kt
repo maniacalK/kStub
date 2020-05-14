@@ -1,8 +1,8 @@
-package com.kStub.stubber
+package com.maniacalK.kStub.stubber
 
 import com.google.gson.Gson
-import com.kStub.model.StubConfig
-import com.kStub.model.StubItem
+import com.maniacalK.kStub.model.StubConfig
+import com.maniacalK.kStub.model.StubItem
 import org.slf4j.LoggerFactory
 import java.io.File
 
