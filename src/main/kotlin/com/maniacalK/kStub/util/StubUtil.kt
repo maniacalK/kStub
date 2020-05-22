@@ -1,4 +1,4 @@
-package com.maniacalK.kStub.stubber
+package com.maniacalK.kStub.util
 
 import com.google.gson.Gson
 import com.maniacalK.kStub.model.StubConfig
@@ -6,7 +6,7 @@ import com.maniacalK.kStub.model.StubItem
 import org.slf4j.LoggerFactory
 import java.io.File
 
-class Stubber {
+class StubUtil {
 
     private val gson = Gson()
     private val logger = LoggerFactory.getLogger("stubber")

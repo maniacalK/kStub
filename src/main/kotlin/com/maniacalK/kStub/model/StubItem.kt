@@ -1,12 +1,23 @@
 package com.maniacalK.kStub.model
 
 data class StubItem(
+        val name: String,
+        val group: String? = null,
         val request: StubRequest,
         val response: StubResponse) {
 
     override fun toString(): String {
-        return "\nStub: [\n\t$request\n\t$response\n]"
+        return "$name${groupToString()}: [$request, $response]"
     }
+
+    val id: String
+        get() = "${request.method.toLowerCase()}-$name"
+
+    val linkName: String
+        get() = "$name${groupToString()}"
+
+    private fun groupToString(): String? = if (!group.isNullOrBlank()) " ($group)" else ""
+
 }
 
 data class StubRequest(

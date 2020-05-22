@@ -1,6 +1,6 @@
 # kStub
 
-A simple kTor application to allow stubbing for mobile applications.
+A simple [kTor](https://ktor.io/) application to allow stubbing for mobile applications.
 
 
 ## Usage
