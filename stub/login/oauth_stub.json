@@ -1,0 +1,16 @@
+{
+    "name": "oauth",
+    "group": "authentication",
+    "request": {
+        "method": "GET",
+        "url": "/sit/auth/member/oauth"
+    },
+    "response": {
+        "status": 200,
+        "body": "{ }",
+        "bodyFile": "login/oauth_body.html",
+        "headers": {
+            "Content-Type": "text/html; charset=utf-8"
+        }
+    }
+}

@@ -13,8 +13,12 @@ import io.ktor.features.DefaultHeaders
 import io.ktor.features.NotFoundException
 import io.ktor.features.StatusPages
 import io.ktor.gson.gson
+import io.ktor.html.respondHtml
 import io.ktor.html.respondHtmlTemplate
+import io.ktor.http.ContentType
 import io.ktor.http.Headers
+import io.ktor.http.defaultForFilePath
+import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.get
@@ -107,8 +111,10 @@ fun Application.module() {
             when (item.request.method) {
                 "GET" -> get(item.request.url) {
                     logger.info("Stub Hit: [${item.request.method}] ${item.request.url}, params: ${call.parameters.entries()}, headers: [${getHeaders(call.request.headers)}]")
-                    item.response.bodyFile?.let {
-                        call.respondText(stubUtil.loadBody("$STUB_PATH/$it", call.parameters))
+                    item.response.bodyFile?.let { bodyPath ->
+                        call.respondText(
+                                text = stubUtil.loadBody("$STUB_PATH/$bodyPath", call.parameters),
+                                contentType = item.response.headers["Content-Type"]?.let { ContentType.parse(it) } ?: ContentType.defaultForFilePath("$STUB_PATH/$bodyPath"))
                     } ?: call.respondText(item.response.body)
                 }
                 else -> {
