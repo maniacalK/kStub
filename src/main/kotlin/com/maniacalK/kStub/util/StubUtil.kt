@@ -3,6 +3,7 @@ package com.maniacalK.kStub.util
 import com.google.gson.Gson
 import com.maniacalK.kStub.model.StubConfig
 import com.maniacalK.kStub.model.StubItem
+import io.ktor.http.Parameters
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -27,8 +28,12 @@ class StubUtil {
         }.toList()
     }
 
-    fun loadBody(fileName: String): String {
-        return File(fileName).readText(Charsets.UTF_8)
+    fun loadBody(fileName: String, parameters: Parameters): String {
+        var output = File(fileName).readText(Charsets.UTF_8)
+        parameters.entries().forEach {
+            output = output.replace("{${it.key}}", it.value.first(), true)
+        }
+        return output
     }
 
     fun loadConfig(filePath: String?): StubConfig =

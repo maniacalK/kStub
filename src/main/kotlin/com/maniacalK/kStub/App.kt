@@ -14,7 +14,7 @@ import io.ktor.features.NotFoundException
 import io.ktor.features.StatusPages
 import io.ktor.gson.gson
 import io.ktor.html.respondHtmlTemplate
-import io.ktor.response.respondFile
+import io.ktor.http.Headers
 import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.get
@@ -25,7 +25,6 @@ import kotlinx.html.div
 import kotlinx.html.h2
 import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
-import java.io.File
 
 const val STUB_PATH = "stub"
 val logger = LoggerFactory.getLogger("kStub")
@@ -107,9 +106,9 @@ fun Application.module() {
             logger.info(item.toString())
             when (item.request.method) {
                 "GET" -> get(item.request.url) {
-                    logger.info("Stub Hit: [${item.request.method}] ${item.request.url}")
+                    logger.info("Stub Hit: [${item.request.method}] ${item.request.url}, params: ${call.parameters.entries()}, headers: [${getHeaders(call.request.headers)}]")
                     item.response.bodyFile?.let {
-                        call.respondFile(File("$STUB_PATH/$it"))
+                        call.respondText(stubUtil.loadBody("$STUB_PATH/$it", call.parameters))
                     } ?: call.respondText(item.response.body)
                 }
                 else -> {
@@ -118,6 +117,10 @@ fun Application.module() {
             }
         }
     }
+}
+
+private fun getHeaders(headers: Headers): String {
+    return headers.entries().joinToString(", ") { "\"${it.key}: ${it.value.first()}\"" }
 }
 
 fun main(args: Array<String>) {
@@ -131,7 +134,7 @@ fun main(args: Array<String>) {
             host = options["host"] ?: config.host,
             factory = Netty,
             port = options["port"]?.toInt() ?: config.port,
-            watchPaths = listOf("App.kt"),
+            watchPaths = listOf("maniacalK/kStub"),
             module = Application::module
     ).start(wait = true)
 }
