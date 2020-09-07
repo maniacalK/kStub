@@ -1,40 +1,29 @@
 package com.maniacalK.kStub
 
-import com.google.gson.Gson
 import com.maniacalK.kStub.templates.MainTemplate
 import com.maniacalK.kStub.templates.RouteTemplate
 import com.maniacalK.kStub.util.StubUtil
-import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.features.CallLogging
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.DefaultHeaders
-import io.ktor.features.NotFoundException
-import io.ktor.features.StatusPages
-import io.ktor.gson.gson
-import io.ktor.html.respondHtml
-import io.ktor.html.respondHtmlTemplate
-import io.ktor.http.ContentType
-import io.ktor.http.Headers
-import io.ktor.http.defaultForFilePath
-import io.ktor.response.respond
-import io.ktor.response.respondText
-import io.ktor.routing.Routing
-import io.ktor.routing.get
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import io.ktor.application.*
+import io.ktor.features.*
+import io.ktor.gson.*
+import io.ktor.html.*
+import io.ktor.http.*
+import io.ktor.response.*
+import io.ktor.routing.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import kotlinx.html.a
 import kotlinx.html.div
 import kotlinx.html.h2
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
 
 const val STUB_PATH = "stub"
-val logger = LoggerFactory.getLogger("kStub")
+val logger: Logger = LoggerFactory.getLogger("kStub")
 val stubUtil = StubUtil()
 
-fun Application.module() {
+fun Application.moduleX() {
     install(StatusPages) {
         exception<NotFoundException> {
             call.respondText("NOT FOUND")
@@ -117,6 +106,14 @@ fun Application.module() {
                                 contentType = item.response.headers["Content-Type"]?.let { ContentType.parse(it) } ?: ContentType.defaultForFilePath("$STUB_PATH/$bodyPath"))
                     } ?: call.respondText(item.response.body)
                 }
+                "POST" -> post(item.request.url) {
+                    logger.info("Stub Hit: [${item.request.method}] ${item.request.url}, params: ${call.parameters.entries()}, headers: [${getHeaders(call.request.headers)}]")
+                    item.response.bodyFile?.let { bodyPath ->
+                        call.respondText(
+                                text = stubUtil.loadBody("$STUB_PATH/$bodyPath", call.parameters),
+                                contentType = item.response.headers["Content-Type"]?.let { ContentType.parse(it) } ?: ContentType.defaultForFilePath("$STUB_PATH/$bodyPath"))
+                    } ?: call.respondText(item.response.body)
+                }
                 else -> {
                     println("Invalid Method")
                 }
@@ -130,19 +127,10 @@ private fun getHeaders(headers: Headers): String {
 }
 
 fun main(args: Array<String>) {
-    val config = stubUtil.loadConfig("config/kstub_config.json")
     val options = getOptions(args)
-
-    logger.info(Gson().toJson(config))
     logger.info(options.toString())
 
-    embeddedServer(
-            host = options["host"] ?: config.host,
-            factory = Netty,
-            port = options["port"]?.toInt() ?: config.port,
-            watchPaths = listOf("maniacalK/kStub"),
-            module = Application::module
-    ).start(wait = true)
+    embeddedServer(Netty, commandLineEnvironment(args)).start(wait = true)
 }
 
 private fun getOptions(args: Array<String>): Map<String, String> {
