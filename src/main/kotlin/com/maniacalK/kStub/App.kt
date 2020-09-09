@@ -103,6 +103,7 @@ fun Application.moduleX() {
                     item.response.bodyFile?.let { bodyPath ->
                         call.respondText(
                                 text = stubUtil.loadBody("$STUB_PATH/$bodyPath", call.parameters),
+                                status = HttpStatusCode.fromValue(item.response.status),
                                 contentType = item.response.headers["Content-Type"]?.let { ContentType.parse(it) } ?: ContentType.defaultForFilePath("$STUB_PATH/$bodyPath"))
                     } ?: call.respondText(item.response.body)
                 }
@@ -111,7 +112,9 @@ fun Application.moduleX() {
                     item.response.bodyFile?.let { bodyPath ->
                         call.respondText(
                                 text = stubUtil.loadBody("$STUB_PATH/$bodyPath", call.parameters),
+                                status = HttpStatusCode.fromValue(item.response.status),
                                 contentType = item.response.headers["Content-Type"]?.let { ContentType.parse(it) } ?: ContentType.defaultForFilePath("$STUB_PATH/$bodyPath"))
+
                     } ?: call.respondText(item.response.body)
                 }
                 else -> {

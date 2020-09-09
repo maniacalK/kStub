@@ -6,7 +6,7 @@
         "url": "/login"
     },
     "response": {
-        "status": 200,
+        "status": 201,
         "body": "{ }",
         "bodyFile": "login/login_body.json",
         "headers": {
