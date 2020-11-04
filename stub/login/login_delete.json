@@ -1,0 +1,15 @@
+{
+    "name": "login",
+    "group": "authentication",
+    "request": {
+        "method": "DELETE",
+        "url": "/login"
+    },
+    "response": {
+        "status": 201,
+        "body": "{ \"deleted\": true }",
+        "headers": {
+            "Content-Type": "application/json"
+        }
+    }
+}
