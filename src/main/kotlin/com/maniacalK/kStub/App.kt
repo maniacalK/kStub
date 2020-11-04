@@ -117,6 +117,16 @@ fun Application.moduleX() {
 
                     } ?: call.respondText(item.response.body)
                 }
+                "PUT" -> put(item.request.url) {
+                    logger.info("Stub Hit: [${item.request.method}] ${item.request.url}, params: ${call.parameters.entries()}, headers: [${getHeaders(call.request.headers)}]")
+                    item.response.bodyFile?.let { bodyPath ->
+                        call.respondText(
+                                text = stubUtil.loadBody("$STUB_PATH/$bodyPath", call.parameters),
+                                status = HttpStatusCode.fromValue(item.response.status),
+                                contentType = item.response.headers["Content-Type"]?.let { ContentType.parse(it) } ?: ContentType.defaultForFilePath("$STUB_PATH/$bodyPath"))
+
+                    } ?: call.respondText(item.response.body)
+                }
                 else -> {
                     println("Invalid Method")
                 }

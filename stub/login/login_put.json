@@ -1,0 +1,16 @@
+{
+    "name": "login",
+    "group": "authentication",
+    "request": {
+        "method": "PUT",
+        "url": "/login"
+    },
+    "response": {
+        "status": 201,
+        "body": "{ }",
+        "bodyFile": "login/login_body.json",
+        "headers": {
+            "Content-Type": "application/json"
+        }
+    }
+}
